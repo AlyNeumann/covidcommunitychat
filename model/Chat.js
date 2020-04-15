@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 //ALY WROTE THIS YO
 const ChatSchema = new mongoose.Schema({
     id: {
-        type: Number,
+        type: String,
         required: true
     },
     messages: [{type: mongoose.Schema.ObjectId, ref: 'Message'}],
@@ -17,9 +17,3 @@ const Chat = mongoose.model('Chat', ChatSchema);
 
 module.exports = Chat;
 
-// database
-
-// 1. User - > List of Chat
-// 2. Need
-// 3. message -> 
-// 4. Chat -> List message

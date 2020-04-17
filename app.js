@@ -15,10 +15,14 @@ const { joinRoom,
     userLeave,
     getRoomUsers
 } = require('./socket-io/users');
+const {getPastMessages} = require('./controllers/chat');
 dotenv.config();
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 app.use(cors({ origin: '*' }))
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 // CONNECT TO DATABASE
 mongoose.connect(process.env.MONGO_URI, {
@@ -41,13 +45,19 @@ io
     .on('connection', socket => {
         console.log('Connected');
 
-        socket.on('joinRoom', ({ username, roomId }) => {
+        socket.on('joinRoom', ({ username, roomId }, callback) => {
+
+           //TODO: error handling
+            // const error = false;
+            // if(error) {
+            //     callback({ error: 'error' })
+            // }
             console.log(username)
             //function here to sort roomId, filter rooms or create new room in mongo
             const room = joinRoom(roomId)
-            const roomResult = room.then(result => { 
+            const roomResult = room.then(result => {
                 console.log(result)
-                currentRoomId = result.id 
+                currentRoomId = result.id
                 currentRoom = result
             })
             userJoin(socket.id, username);
@@ -55,8 +65,9 @@ io
 
             socket.join(roomResult.id)
 
-            //give success message for now
-            return socket.emit('success', room)
+            //messages array for new user joining give success message for now
+            messagesArr = currentRoom.messages
+            return socket.emit('success', ({ messagesArr }))
         })
 
         //welcome message to user from chatBot
@@ -67,11 +78,9 @@ io
         socket.on('chatmessage', ({ message, user, viewedUser }) => {
             //this is all working
             const username = user.name;
-            console.log('from app.js')
-            console.log(message, currentRoomId)
             const addedMessage = addMessage(message, currentRoomId, user, viewedUser)
             console.log(addedMessage)
-            
+
 
             socket.emit('chatmessage', formatMessage(username, message))
         });
@@ -85,6 +94,7 @@ io
         });
     })
 
+app.post('/pastChat', getPastMessages)
 
 
 http.listen(process.env.PORT, () => {

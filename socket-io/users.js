@@ -65,16 +65,6 @@ function getRoomUsers(room){
     return users.filter(user => user.room === room)
 }
 
-// //get all chats
-// async function getAllChats(req, res) {
-//     const chats = await Chat.find()
-//     if (!chats) {
-//         res.send({ chats })
-//     } else {
-//         res.status(200).json(chats)
-//     }
-// }
-
 
 module.exports = {
     joinRoom,

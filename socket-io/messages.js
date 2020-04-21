@@ -14,10 +14,10 @@ function formatMessage(username, message) {
     }
 }
 
-function addMessage(message, roomId, user, viewedUser) {
-    console.log('from message')
-    console.log(message, roomId)
-    const newMessage = new Message({ text: message, to: user.name, from: viewedUser.name })
+function addMessage(message, user, viewedUser, roomId) {
+    // console.log('from message')
+    // console.log(message, roomId)
+    const newMessage = new Message({ text: message, to: viewedUser.name, from: user.name, chatId: roomId })
     newMessage.save().then(add => {
         console.log(add)
         //this is to push the new id ref to the User object 
@@ -28,19 +28,6 @@ function addMessage(message, roomId, user, viewedUser) {
         })
     })
 }
-
-// //find the chat room & get its messages
-// async function getMessages(){
-//     //needs chatroom id
-//     const chat = await Chat.find({_id: id})
-//     //question about _id in schema... 
-//     .populate("messages", "_id text created")
-//     if (!chat) {
-        
-//     } else {
-       
-//     }
-// }
 
 module.exports = {
     formatMessage,

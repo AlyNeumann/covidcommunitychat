@@ -56,12 +56,12 @@ io
             //function here to sort roomId, filter rooms or create new room in mongo
             const room = joinRoom(roomId)
             const roomResult = room.then(result => {
-                console.log(result)
+                // console.log(result)
                 currentRoomId = result.id
                 currentRoom = result
             })
             userJoin(socket.id, username);
-            console.log(currentRoom);
+            // console.log(currentRoom);
 
             socket.join(roomResult.id)
 
@@ -70,15 +70,16 @@ io
             return socket.emit('success', ({ messagesArr }))
         })
 
-        //welcome message to user from chatBot
-        socket.emit('chatmessage', formatMessage(chatBot, 'welcome'))
+        // //welcome message to user from chatBot
+        // socket.emit('chatmessage', formatMessage(chatBot, 'welcome'))
 
 
         //incoming messages from user
-        socket.on('chatmessage', ({ message, user, viewedUser }) => {
+        socket.on('chatmessage', ({ message, user, roomId, viewedUser }) => {
             //this is all working
+            // console.log(roomId)
             const username = user.name;
-            const addedMessage = addMessage(message, currentRoomId, user, viewedUser)
+            const addedMessage = addMessage(message, user, viewedUser, roomId)
             console.log(addedMessage)
 
 

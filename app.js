@@ -15,13 +15,13 @@ const { joinRoom,
     userLeave,
     getRoomUsers
 } = require('./socket-io/users');
-const {getPastMessages} = require('./controllers/chat');
+const { getPastMessages, getUserChats } = require('./controllers/chat');
 dotenv.config();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
 app.use(cors({ origin: '*' }))
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // CONNECT TO DATABASE
@@ -45,25 +45,46 @@ io
     .on('connection', socket => {
         console.log('Connected');
 
-        socket.on('joinRoom', ({ username, roomId }, callback) => {
+        socket.on('joinRoom', ({ username, roomId, chatIds, to }, callback) => {
+            console.log(chatIds, to)
 
-           //TODO: error handling
+            //TODO: error handling
             // const error = false;
             // if(error) {
             //     callback({ error: 'error' })
             // }
             console.log(username)
             //function here to sort roomId, filter rooms or create new room in mongo
-            const room = joinRoom(roomId)
-            const roomResult = room.then(result => {
-                // console.log(result)
-                currentRoomId = result.id
-                currentRoom = result
-            })
-            userJoin(socket.id, username);
-            // console.log(currentRoom);
+            const room = joinRoom(roomId, chatIds, to)
+            //TODO: trouble with error handling...
+            try{
+                const roomResult = room.then(result => {
+                    console.log(result)
+                    if(result.id){
+                        currentRoomId = result.id
+                        currentRoom = result
+                        userJoin(socket.id, username);
+                        // console.log(currentRoom);
+            
+                        socket.join(roomResult.id)
+                    }
+                    // currentRoomId = result.id
+                    // currentRoom = result
+                    // userJoin(socket.id, username);
+                    // // console.log(currentRoom);
+        
+                    // socket.join(roomResult.id)
+                })
+            }catch{err => {console.log(err)}}
+            // const roomResult = room.then(result => {
+            //     // console.log(result)
+            //     currentRoomId = result.id
+            //     currentRoom = result
+            // })
+            // userJoin(socket.id, username);
+            // // console.log(currentRoom);
 
-            socket.join(roomResult.id)
+            // socket.join(roomResult.id)
 
             //messages array for new user joining give success message for now
             messagesArr = currentRoom.messages
@@ -96,6 +117,7 @@ io
     })
 
 app.post('/pastChat', getPastMessages)
+app.post('/userChats', getUserChats)
 
 
 http.listen(process.env.PORT, () => {

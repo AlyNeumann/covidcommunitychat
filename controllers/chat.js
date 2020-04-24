@@ -1,4 +1,5 @@
 const Messages = require('../model/Message');
+const Chat = require('../model/Chat');
 
 //to get all past messages for chat
 //TODO: populate messages once you get the chat back
@@ -10,7 +11,7 @@ exports.getPastMessages = async (req, res) => {
     const page = req.body.page;
     try {
         const chatMessages = await Messages.find({ chatId: id })
-            .sort({ created : -1 })
+            .sort({ created: -1 })
             .skip((page - 1) * pagination)
             .limit(pagination)
 
@@ -19,16 +20,30 @@ exports.getPastMessages = async (req, res) => {
         } else {
             const chatRev = chatMessages.reverse()
             res.status(200).json(chatRev)
-            
-            console.log('past chat from data base', chatMessages)
+
+            // console.log('past chat from data base', chatMessages)
         }
     } catch (err) {
         console.log(err)
     }
 
-    // message -> Chatroom id
-    // when you load the messages you do
-    // const Message = require('../model/Message');
-    // Message.find({Chatroom})
+}
 
+exports.getUserChats = async (req, res) => {
+    const { userId } = req.body
+    console.log(userId)
+    //take the id and filter for any chat.chatIds containing that id
+    //send back the "to" & "chat id"
+    try {
+        const chats = await Chat.find({ chatIds: userId })
+        if (!chats) {
+            res.status(200).json({ msg: "No chat history" })
+        } else {
+            res.status(200).json(chats)
+
+            console.log('past chats', chats)
+        }
+    } catch (err) {
+        console.log(err)
+    }
 }

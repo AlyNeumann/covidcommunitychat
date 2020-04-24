@@ -4,7 +4,7 @@ const Chat = require('../model/Chat');
 const users = [];
 
 //filter for room, if it doesnt exist, create new one
-async function joinRoom(roomId) {
+async function joinRoom(roomId, chatIds, to) {
 
     //split and reverse id string then check if it exists 
     let halfwayThrough = Math.floor(roomId.length / 2)
@@ -21,7 +21,7 @@ async function joinRoom(roomId) {
     //if the chat does exist, update that one
         if(!chatRoom ){
              //if the chat doesnt exist, create one
-            const chat = new Chat({ id: sortedIds })
+            const chat = new Chat({ id: sortedIds, chatIds: chatIds, to: to })
             chat.save().then(result => {
                 console.log('that worked!')
             })

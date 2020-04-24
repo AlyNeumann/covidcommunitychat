@@ -7,6 +7,14 @@ const ChatSchema = new mongoose.Schema({
         required: true
     },
     messages: [{type: mongoose.Schema.ObjectId, ref: 'Message'}],
+    chatIds: {
+        type: Array,
+        required: true
+    },
+    to: {
+        type: String,
+        required: true
+    },
     created: {
         type: Date,
         default: Date.now

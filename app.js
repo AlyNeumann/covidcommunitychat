@@ -45,8 +45,7 @@ io
     .on('connection', socket => {
         console.log('Connected');
 
-        socket.on('joinRoom', ({ username, roomId, chatIds, to }, callback) => {
-            console.log(chatIds, to)
+        socket.on('joinRoom', ({ username, roomId, chatIds }, callback) => {
 
             //TODO: error handling
             // const error = false;
@@ -55,37 +54,21 @@ io
             // }
             console.log(username)
             //function here to sort roomId, filter rooms or create new room in mongo
-            const room = joinRoom(roomId, chatIds, to)
+            const room = joinRoom(roomId, chatIds)
             //TODO: trouble with error handling...
             try{
                 const roomResult = room.then(result => {
                     console.log(result)
-                    if(result.id){
+                    if(result.id !== undefined){
                         currentRoomId = result.id
                         currentRoom = result
                         userJoin(socket.id, username);
-                        // console.log(currentRoom);
             
                         socket.join(roomResult.id)
                     }
-                    // currentRoomId = result.id
-                    // currentRoom = result
-                    // userJoin(socket.id, username);
-                    // // console.log(currentRoom);
-        
-                    // socket.join(roomResult.id)
                 })
             }catch{err => {console.log(err)}}
-            // const roomResult = room.then(result => {
-            //     // console.log(result)
-            //     currentRoomId = result.id
-            //     currentRoom = result
-            // })
-            // userJoin(socket.id, username);
-            // // console.log(currentRoom);
-
-            // socket.join(roomResult.id)
-
+          
             //messages array for new user joining give success message for now
             messagesArr = currentRoom.messages
             return socket.emit('success', ({ messagesArr }))
@@ -96,11 +79,11 @@ io
 
 
         //incoming messages from user
-        socket.on('chatmessage', ({ message, user, roomId, viewedUser }) => {
+        socket.on('chatmessage', ({ message, user, roomId, to }) => {
             //this is all working
             // console.log(roomId)
             const username = user.name;
-            const addedMessage = addMessage(message, user, viewedUser, roomId)
+            const addedMessage = addMessage(message, user, to, roomId)
             console.log(addedMessage)
 
 

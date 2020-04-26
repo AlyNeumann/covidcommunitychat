@@ -11,10 +11,6 @@ const ChatSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
-    to: {
-        type: String,
-        required: true
-    },
     created: {
         type: Date,
         default: Date.now

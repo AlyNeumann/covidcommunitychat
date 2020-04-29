@@ -45,16 +45,16 @@ io
     .on('connection', socket => {
         console.log('Connected');
 
-        socket.on('joinRoom', ({ username, roomId, chatIds }, callback) => {
+        socket.on('joinRoom', ({ username, roomId, chatIds, names }, callback) => {
 
             //TODO: error handling
             // const error = false;
             // if(error) {
             //     callback({ error: 'error' })
             // }
-            console.log(username)
+            console.log(names)
             //function here to sort roomId, filter rooms or create new room in mongo
-            const room = joinRoom(roomId, chatIds)
+            const room = joinRoom(roomId, chatIds, names)
             //TODO: trouble with error handling...
             try{
                 const roomResult = room.then(result => {

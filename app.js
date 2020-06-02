@@ -41,7 +41,7 @@ let currentRoom = {};
 
 
 io
-    //TODO: open one io instance, but room id is passed with "join room"
+    // open one io instance, but room id is passed with "join room"
     .on('connection', socket => {
         console.log('Connected');
 
@@ -104,5 +104,5 @@ app.post('/userChats', getUserChats)
 
 
 http.listen(process.env.PORT, () => {
-    console.log('Server listening on port 3000')
+    console.log('Server listening on port 3001')
 });

@@ -6,11 +6,12 @@ const Chat = require('../model/Chat');
 function formatMessage(username, message) {
 
     //its all getting here
-    console.log(username, message)
+    const currentDate = new Date()
+    // console.log(currentDate)
     return {
         username: username,
         text: message,
-        time: moment().format('h:mm:a')
+        time: moment(currentDate).format('h:mm:a')
     }
 }
 

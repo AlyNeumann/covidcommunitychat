@@ -13,8 +13,9 @@ async function joinRoom(roomId, chatIds, names) {
     let firstId = roomId.slice(0, halfwayThrough);
     let secondId = roomId.slice(halfwayThrough, roomId.length);
 
-    const ids = [ firstId, secondId]
+    const ids = [ firstId, secondId ]
     const sortedIds = ids.sort().join('');
+
 
     //filter through data base to see if it exists 
     try {

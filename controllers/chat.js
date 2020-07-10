@@ -4,7 +4,7 @@ const Chat = require('../model/Chat');
 //to get all past messages for chat
 //TODO: populate messages once you get the chat back
 exports.getPastMessages = async (req, res) => {
-    console.log('body for past chat request')
+    console.log('body for past messages request')
     console.log(req.body)
     const id = req.body.id
     const pagination = 10;
@@ -34,6 +34,7 @@ exports.getUserChats = async (req, res) => {
     console.log(userId)
     //take the id and filter for any chat.chatIds containing that id
     //send back the "to" & "chat id"
+    //TODO: order these by most recent date updated
     try {
         const chats = await Chat.find({ chatIds: userId })
         if (!chats) {

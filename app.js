@@ -44,9 +44,10 @@ io
     // open one io instance, but room id is passed with "join room"
     .on('connection', socket => {
         console.log('Connected');
+        // console.log(io);
 
         socket.on('joinRoom', ({ username, roomId, chatIds, names }, callback) => {
-
+            console.log('joining room now')
             //TODO: error handling
             // const error = false;
             // if(error) {
@@ -58,7 +59,7 @@ io
             //TODO: trouble with error handling...
             try{
                 const roomResult = room.then(result => {
-                    console.log(result)
+                    // console.log(result)
                     if(result.id !== undefined){
                         currentRoomId = result.id
                         currentRoom = result

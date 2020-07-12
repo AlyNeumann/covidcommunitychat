@@ -15,10 +15,12 @@ function formatMessage(username, message) {
     }
 }
 
-function addMessage(message, user, to, roomId) {
+function addMessage(message, user, to, roomId, chatIds) {
     // console.log('from message')
     // console.log(message, roomId)
-    const newMessage = new Message({ text: message, to: to, from: user.name, chatId: roomId })
+    const id1 = chatIds[0];
+    const id2 = chatIds[1];
+    const newMessage = new Message({ text: message, to: to, from: user.name, chatId: roomId, id1: id1, id2: id2 })
     newMessage.save().then(add => {
         console.log(add)
         //this is to push the new id ref to the User object 

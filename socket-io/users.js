@@ -7,7 +7,7 @@ const users = [];
 async function joinRoom(roomId, chatIds, names) {
     console.log('names from join room')
     console.log(names)
-
+    
     //split and reverse id string then check if it exists 
     let halfwayThrough = Math.floor(roomId.length / 2)
     let firstId = roomId.slice(0, halfwayThrough);

@@ -15,7 +15,7 @@ const { joinRoom,
     userLeave,
     getRoomUsers
 } = require('./socket-io/users');
-const { getPastMessages, getUserChats } = require('./controllers/chat');
+const { getPastMessages, getUserChats, getRecentMessage } = require('./controllers/chat');
 dotenv.config();
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -80,11 +80,13 @@ io
 
 
         //incoming messages from user
-        socket.on('chatmessage', ({ message, user, roomId, to }) => {
+        socket.on('chatmessage', ({ message, user, roomId, to, chatIdsArr }) => {
             //this is all working
-            // console.log(roomId)
+            console.log('chat Ids')
+            console.log(chatIdsArr)
+            const chatIds = chatIdsArr
             const username = user.name;
-            const addedMessage = addMessage(message, user, to, roomId)
+            const addedMessage = addMessage(message, user, to, roomId, chatIds)
             console.log(addedMessage)
 
 
@@ -102,6 +104,7 @@ io
 
 app.post('/pastChat', getPastMessages)
 app.post('/userChats', getUserChats)
+app.post('/recentMessages', getRecentMessage)
 
 
 http.listen(process.env.PORT, () => {

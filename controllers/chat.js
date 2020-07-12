@@ -48,3 +48,28 @@ exports.getUserChats = async (req, res) => {
         console.log(err)
     }
 }
+
+exports.getRecentMessage = async (req, res) => {
+    const { id } = req.body
+    console.log(id)
+    //TODO: this needs to filter to find the id in either id1 or id2
+
+    try {
+        const messages = await Messages.find({  $or: [
+            { id1: id },
+            { id2: id }
+          ]})
+            .sort({ created: -1 })
+            .limit(5)
+        if (messages == []) {
+            res.status(200).json({ msg: "No messages" })
+        } else {
+            // messagesR = messages.reverse()
+            res.status(200).json(messages)
+
+            console.log('past messages', messages)
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}

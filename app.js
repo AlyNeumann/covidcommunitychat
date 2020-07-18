@@ -3,7 +3,7 @@ const app = express();
 const http = require('http').createServer(app);
 const dotenv = require('dotenv')
 const io = require('socket.io')(http);
-const webpush = require('web-push')
+// const webpush = require('web-push')
 const mongoose = require('mongoose'); // library for mongodb
 const {
     formatMessage,
@@ -17,6 +17,7 @@ const { joinRoom,
     getRoomUsers
 } = require('./socket-io/users');
 const { getPastMessages, getUserChats, getRecentMessage } = require('./controllers/chat');
+const { getNotificationSubscribe } = require('./controllers/notification');
 dotenv.config();
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -26,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //CONNECT WEB PUSH NOTIFICATIONS
-webpush.setVapidDetails(process.env.WEB_PUSH_CONTACT, process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY)
+// webpush.setVapidDetails(process.env.WEB_PUSH_CONTACT, process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY)
 
 // CONNECT TO DATABASE
 mongoose.connect(process.env.MONGO_URI, {
@@ -109,24 +110,7 @@ io
 app.post('/pastChat', getPastMessages)
 app.post('/userChats', getUserChats)
 app.post('/recentMessages', getRecentMessage)
-//TODO: if this works, move it to another file
-app.post('/notifications/subscribe', (req, res) => {
-    const subscription = req.body
-  
-    console.log(subscription)
-    console.log('user subscribed')
-  
-    const payload = JSON.stringify({
-      title: 'Hello!',
-      body: 'It works.',
-    })
-  
-    webpush.sendNotification(subscription, payload)
-      .then(result => console.log(result))
-      .catch(e => console.log(e.stack))
-  
-    res.status(200).json({'success': true})
-  });
+app.post('/notifications/subscribe', getNotificationSubscribe);
 
 
 http.listen(process.env.PORT, () => {

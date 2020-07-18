@@ -20,6 +20,8 @@ function addMessage(message, user, to, roomId, chatIds) {
     // console.log(message, roomId)
     const id1 = chatIds[0];
     const id2 = chatIds[1];
+    //TODO: take id2 and send push notification via service worker
+    // use the "to" feild to send who the message is from
     const newMessage = new Message({ text: message, to: to, from: user.name, chatId: roomId, id1: id1, id2: id2 })
     newMessage.save().then(add => {
         console.log(add)

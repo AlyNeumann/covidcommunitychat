@@ -52,7 +52,8 @@ exports.getUserChats = async (req, res) => {
 exports.getRecentMessage = async (req, res) => {
     const { id } = req.body
     console.log(id)
-    //TODO: this needs to filter to find the id in either id1 or id2
+    //filter to find the id in either id1 or id2
+    //returns 5 most recent messages
 
     try {
         const messages = await Messages.find({  $or: [

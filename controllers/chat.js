@@ -50,10 +50,13 @@ exports.getUserChats = async (req, res) => {
 }
 
 exports.getRecentMessage = async (req, res) => {
-    const { id } = req.body
-    console.log(id)
+    const { id, last_login } = req.body
+    // console.log(id)
+    // console.log(last_login)
+    // console.log(last_login)
     //filter to find the id in either id1 or id2
     //returns 5 most recent messages
+    // const newMessages = [];
 
     try {
         const messages = await Messages.find({  $or: [
@@ -61,12 +64,30 @@ exports.getRecentMessage = async (req, res) => {
             { id2: id }
           ]})
             .sort({ created: -1 })
-            .limit(5)
+            .limit(1)
         if (messages == []) {
             res.status(200).json({ msg: "No messages" })
         } else {
             // messagesR = messages.reverse()
-            res.status(200).json(messages)
+            TODO:
+            //check if (message.created > last_login) return messages
+            //else return no new messages
+            console.log(messages)
+            const message = messages[0]
+            console.log(message.created)
+            console.log(last_login)
+            // messages.map((message) => {
+                if(message > last_login){
+                    res.status(200).json(messages)
+                    // newMessages.push(message);
+                }else{
+                    return res.status(200).json({ msg: 'no new messages right now'})
+                }
+            // }
+            // )
+
+            
+            // res.status(200).json(newMessages)
 
             console.log('past messages', messages)
         }

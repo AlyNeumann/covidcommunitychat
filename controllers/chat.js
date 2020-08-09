@@ -59,14 +59,16 @@ exports.getRecentMessage = async (req, res) => {
     // const newMessages = [];
 
     try {
-        const messages = await Messages.find({  $or: [
-            { id1: id },
-            { id2: id }
-          ]})
+        const messages = await Messages.find({
+            $or: [
+                { id1: id },
+                { id2: id }
+            ]
+        })
             .sort({ created: -1 })
             .limit(1)
         if (messages == [] || undefined) {
-            res.status(200).json({ msg: "No messages" })
+            res.status(402).json({ msg: "No messages" })
         } else {
             // messagesR = messages.reverse()
             TODO:
@@ -75,28 +77,38 @@ exports.getRecentMessage = async (req, res) => {
             console.log('hitting inside if statement')
             console.log(messages)
             const message = messages[0]
-            console.log(message.created)
+            // console.log(message.created)
+            console.log(message)
             console.log(last_login)
-            const created = Date.parse(message.created)
-            const login = Date.parse(last_login)
-            console.log(created)
-            console.log(login)
-            // messages.map((message) => {
-                if(created > login){
+            if (message !== undefined) {
+                const created = Date.parse(message.created)
+                const login = Date.parse(last_login)
+                if (created > login) {
                     res.status(200).json(messages)
-                    // newMessages.push(message);
-                }else{
-                    return res.status(200).json({ msg: 'no new messages right now'})
+                } else {
+                    return res.status(304).json({ msg: 'no new messages right now' })
                 }
+            }
+            // const created = Date.parse(message.created)
+            // const login = Date.parse(last_login)
+            // // console.log(created)
+            // // console.log(login)
+            // // messages.map((message) => {
+            //     if(created > login){
+            //         res.status(200).json(messages)
+            //         // newMessages.push(message);
+            //     }else{
+            //         return res.status(200).json({ msg: 'no new messages right now'})
+            //     }
             // }
             // )
 
-            
+
             // res.status(200).json(newMessages)
 
             console.log('past messages', messages)
-        // }else {
-        //     return res.status(200).json({ msg: 'messages undefined'})
+            // }else {
+            //     return res.status(200).json({ msg: 'messages undefined'})
         }
     } catch (err) {
         console.log(err)

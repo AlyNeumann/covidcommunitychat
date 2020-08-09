@@ -22,7 +22,7 @@ exports.getNotificationSubscribe = async (req, res) => {
     // const filter = { _id: id};
     // const update = await User.updateOne( filter, { $set: { subscription: subscription } })
     // if (update.nModified == 0) {
-    //     res.status(200).json({ msg: "No needs updated" })
+    //     res.status(200).json({ msg: "Error: subscription not saved" })
     // } else {
     //     res.status(200).json({ msg: "Successful" })
     // }

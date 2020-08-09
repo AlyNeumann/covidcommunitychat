@@ -51,7 +51,7 @@ exports.getUserChats = async (req, res) => {
 
 exports.getRecentMessage = async (req, res) => {
     const { id, last_login } = req.body
-    // console.log(id)
+    console.log('hitting recent messages')
     // console.log(last_login)
     // console.log(last_login)
     //filter to find the id in either id1 or id2
@@ -65,19 +65,24 @@ exports.getRecentMessage = async (req, res) => {
           ]})
             .sort({ created: -1 })
             .limit(1)
-        if (messages == []) {
+        if (messages == [] || undefined) {
             res.status(200).json({ msg: "No messages" })
         } else {
             // messagesR = messages.reverse()
             TODO:
             //check if (message.created > last_login) return messages
             //else return no new messages
+            console.log('hitting inside if statement')
             console.log(messages)
             const message = messages[0]
             console.log(message.created)
             console.log(last_login)
+            const created = Date.parse(message.created)
+            const login = Date.parse(last_login)
+            console.log(created)
+            console.log(login)
             // messages.map((message) => {
-                if(message > last_login){
+                if(created > login){
                     res.status(200).json(messages)
                     // newMessages.push(message);
                 }else{
@@ -90,6 +95,8 @@ exports.getRecentMessage = async (req, res) => {
             // res.status(200).json(newMessages)
 
             console.log('past messages', messages)
+        // }else {
+        //     return res.status(200).json({ msg: 'messages undefined'})
         }
     } catch (err) {
         console.log(err)

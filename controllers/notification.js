@@ -1,56 +1,103 @@
 const webpush = require('web-push')
 const dotenv = require('dotenv')
+const ServiceWorker = require('../model/ServiceWorker');
 dotenv.config();
 webpush.setVapidDetails(process.env.WEB_PUSH_CONTACT, process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY)
 
 //TODO: SAVE THE USER SUBSCRIPTION TO DATA BASE!!!!
 exports.getNotificationSubscribe = async (req, res) => {
     // const subscription = req.body
-    // console.log('web push request body')
-    // console.log(req.body)
+    console.log('web push request body')
+
     console.log(req.body)
-    console.log(req.userId)
-    // const { _id } = req.user;
-   
-  
-    // console.log(subscription)
-    console.log('user subscribed')
+    const { userId, subscription } = req.body
+    const username = "Joel"
 
-    //check if User has subsciption
-    //save subscription to User object 
+    // const id = JSON.stringify(userId)
+    console.log('subscription from get notification subscribe')
+    console.log(JSON.stringify(subscription))
+    console.log('userId from get notification subscribe')
+    console.log(userId)
+    // console.log(JSON.stringify(userId))
+    ///!!!!WORKING!!!! TODO: add subscription to user database! (what should that look like?)
 
-    // const filter = { _id: id};
-    // const update = await User.updateOne( filter, { $set: { subscription: subscription } })
-    // if (update.nModified == 0) {
-    //     res.status(200).json({ msg: "Error: subscription not saved" })
-    // } else {
-    //     res.status(200).json({ msg: "Successful" })
-    // }
-    //TODO: wrap this in an if statement checking for new messages
-    //call user object 
-    //call mesages object
-    //filter messages for the user id (limit 5)
-    //if message date > last_login, push notification!
+    //save subscription to Subscription Collection object 
+    if(userId){
+        try {
+            const existingSubscription = await ServiceWorker.findOne({ id: userId })
+            if (!existingSubscription) {
+                const newSW = await new ServiceWorker({ subscription: JSON.stringify(subscription), id: userId })
+                newSW.save().then(result => {
+                    console.log('that worked!')
+                })
+                if (!newSW) {
+                    res.status(200).json({ msg: "Error: subscription not saved" })
+                } else {
+                    res.status(200).json({ msg: "Successful" })
+                    const payload = JSON.stringify({
+                        title: `Hi ${username}`,
+                        body: 'Thank you for registering for our notifications!'
+                        //not supported yet
+                        //   sound: "<URL String>"
+                    })
+                    console.log('subscription from before 1st push notification')
+                    console.log(subscription)
+    
+                    webpush.sendNotification(subscription, payload)
+                        .then(result => console.log(result))
+                        .catch(e => console.log(e.stack))
+                }
+            } else {
+                res.status(200).json({ msg: "Existing Subscription in Database" })
+                const payload = JSON.stringify({
+                    title: `Hi ${username}`,
+                    body: 'Welcome back!'
+                    //not supported yet
+                    //   sound: "<URL String>"
+                })
+                console.log('existingSubscription')
+                const oldSub = JSON.parse(existingSubscription.subscription);
+                const oldSubscription = {
+                    oldSub
+                }
+                console.log(oldSubscription)
+                //TODO: why doesnt it think this is a valid subscription?
+                webpush.sendNotification(oldSubscription, payload)
+                    .then(result => console.log(result))
+                    .catch(e => console.log(e.stack))
+            }
+            // const update = await new ServiceWorker({ subscription: JSON.stringify(subscription), id: userId })
+            // update.save().then(result => {
+            //     console.log('that worked!')
+            // })
+            // if (!update) {
+            //     res.status(200).json({ msg: "Error: subscription not saved" })
+            // } else {
+            //     res.status(200).json({ msg: "Successful" })
+            //     const payload = JSON.stringify({
+            //         title: `Hi ${username}`,
+            //         body: 'Thank you for registering for our notifications!'
+            //         //not supported yet
+            //         //   sound: "<URL String>"
+            //     })
+    
+            //     webpush.sendNotification(subscription, payload)
+            //         .then(result => console.log(result))
+            //         .catch(e => console.log(e.stack))
+            // }
+        } catch (error) {
+            console.log(error)
+        }
+    }
   
-    // const payload = JSON.stringify({
-    //   title: 'Welcome!',
-    //   body: 'You have new messages waiting in the chat!'
-    //   //not supported yet
-    // //   sound: "<URL String>"
-    // })
-  
-    // webpush.sendNotification(subscription, payload)
-    //   .then(result => console.log(result))
-    //   .catch(e => console.log(e.stack))
-  
-    res.status(200).json({'success': true})
+
 
 }
 
 //TODO: need to get user id
 exports.getMessageNotification = async (req, res) => {
     //TODO: this functions notifies when user has a new chat message
-    //TODO: pull user subscription from their user id
+    //TODO: pull user subscription with their user id from ServiceWorker collection
     //use actions to make a button to link to chat - "actions": "<Array of Strings>",
 
     //call user subscription feild 
@@ -58,7 +105,7 @@ exports.getMessageNotification = async (req, res) => {
     //call messages with user id
     //compare the time of the two and if messages are newer, send push notification!
 
-    
+
     // const username = req.body.username
     // const subscription = req.body.subscription
     // const { id } = req.body
@@ -91,7 +138,7 @@ exports.getMessageNotification = async (req, res) => {
     //   //not supported yet
     // //   sound: "<URL String>"
     // })
-  
+
     // webpush.sendNotification(subscription, payload)
     //   .then(result => console.log(result))
     //   .catch(e => console.log(e.stack))

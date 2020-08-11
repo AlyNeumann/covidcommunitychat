@@ -51,7 +51,7 @@ exports.getUserChats = async (req, res) => {
 
 exports.getRecentMessage = async (req, res) => {
     const { id, last_login } = req.body
-    console.log('hitting recent messages')
+    // console.log('hitting recent messages')
     // console.log(last_login)
     // console.log(last_login)
     //filter to find the id in either id1 or id2

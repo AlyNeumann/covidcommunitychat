@@ -54,12 +54,9 @@ io
         socket.on('joinRoom', ({ username, roomId, chatIds, names }, callback) => {
             console.log('joining room now')
             //TODO: error handling
-            // const error = false;
-            // if(error) {
-            //     callback({ error: 'error' })
-            // }
             console.log(names)
-            //function here to sort roomId, filter rooms or create new room in mongo
+            if(chatIds.length > 30) {
+                //function here to sort roomId, filter rooms or create new room in mongo
             const room = joinRoom(roomId, chatIds, names)
             //TODO: trouble with error handling...
             try{
@@ -78,7 +75,31 @@ io
             //messages array for new user joining give success message for now
             messagesArr = currentRoom.messages
             return socket.emit('success', ({ messagesArr }))
-        })
+        }else{
+            console.log('no chats yet')
+        }
+
+            })
+        //     //function here to sort roomId, filter rooms or create new room in mongo
+        //     const room = joinRoom(roomId, chatIds, names)
+        //     //TODO: trouble with error handling...
+        //     try{
+        //         const roomResult = room.then(result => {
+        //             // console.log(result)
+        //             if(result.id !== undefined){
+        //                 currentRoomId = result.id
+        //                 currentRoom = result
+        //                 userJoin(socket.id, username);
+            
+        //                 socket.join(roomResult.id)
+        //             }
+        //         })
+        //     }catch{err => {console.log(err)}}
+          
+        //     //messages array for new user joining give success message for now
+        //     messagesArr = currentRoom.messages
+        //     return socket.emit('success', ({ messagesArr }))
+        // })
 
         // //welcome message to user from chatBot
         // socket.emit('chatmessage', formatMessage(chatBot, 'welcome'))
